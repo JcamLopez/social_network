@@ -11,9 +11,7 @@ export interface BackendErrorResponse {
 export const handleApiError = <T = unknown>(error: unknown): AppError<T> => {
 
     if (error instanceof AxiosError) {
-        console.log("este es mi error xxxxxxxxxxxxxxxxxxxxxxx")
         console.dir(error)
-        console.log("ssssssssssssssssssssssssssssss")
         const responseData = error.response?.data as BackendErrorResponse | undefined;
         const message = responseData?.message || error.message || 'Error de comunicación con el servidor';
         const status = error.response?.status || 500;

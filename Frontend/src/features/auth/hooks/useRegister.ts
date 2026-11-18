@@ -15,11 +15,10 @@ export const useRegister = () => {
         try {
             const response = await authService.register(data)
             return response
-        } catch (err) {
-            const appError = handleApiError<ValidationErrors>(err)
+        } catch (error) {
+            const appError = handleApiError<ValidationErrors>(error)
             setError(appError.message)
             if (appError.details) setFieldErrors(appError.details)
-        
             return null
         } finally {
             setIsLoading(false)

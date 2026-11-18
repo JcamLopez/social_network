@@ -6,7 +6,7 @@ import type { TypeDocument } from '../../typeDocument/types/document.types'
 export const RegisterForm = () => {
 
     const { getTypeDocument, isError: __isDocumentError, isLoading: isDocumentLoading } = useGetTypeDocumnet()
-    const { registerUser, isLoading, error } = useRegister()
+    const { registerUser, isLoading, fieldErrors } = useRegister()
     const [typeDoc, setTypeDoc] = useState<TypeDocument[]>([])
     const [formData, setFormData] = useState<RegisterPayload>({
         email: '',
@@ -22,8 +22,6 @@ export const RegisterForm = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
-        console.log("xxxxxxxxxxxxxxxxx")
-        console.log(value)
         setFormData(prev => ({
             ...prev,
             [name]: name === 'age' ? Number(value) : value
@@ -54,12 +52,29 @@ export const RegisterForm = () => {
     }, [])
     return (
         <form onSubmit={handleSubmit} className="grid w-2xl grid-cols-1 md:grid-cols-2 gap-4 p-4 mb-9  rounded-2xl  shadow-sm">
-            {error && <div className="p-3 text-red-700 bg-red-100 rounded">{error}</div>}
+            {/*   <div className='col-span-full flex flex-col'>
+                {error && <div className="p-3 mb-3 text-red-700 bg-red-100 rounded w-full">{error}</div>}
+
+                {fieldErrors && (
+                    <div className="p-3 text-red-700 bg-red-100 rounded w-full">
+                        <p className="font-bold">Por favor corrige los siguientes errores:</p>
+                        <ul className="list-disc list-inside">
+                           
+                            {Object.values(fieldErrors).flat().map((mensaje, index) => (
+                                <li key={index}>{mensaje}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+            </div> */}
+
+
             <div className="flex justify-center col-span-full mt-3 mb-3">
                 <h2 className="text-2xl font-bold text-center">Crear Cuenta</h2>
             </div>
 
-
+          
 
             <div>
                 <label htmlFor="doc">Documento</label>
@@ -68,14 +83,23 @@ export const RegisterForm = () => {
 
             <div>
                 <label htmlFor="type">Tipo de documento</label>
-                <select name="typeDoc" id="type" className="w-full px-4 py-1 rounded-sm border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:scale-95" onChange={handleChange} >
-                    <option value="">Tipo documento</option>
+                <select name="typeDoc" id="type" className={`w-full px-4 py-1 rounded-sm border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 ${fieldErrors?.typedDoc ? 'border-red-500 bg-red-50 focus:border-red-700' : 'focus:ring-blue-500 focus:border-blue-500'}  transition-all shadow-sm hover:scale-95`} onChange={handleChange} value='Tipo documento'>
+                    {/*       className={`w-full p-2 border rounded outline-none transition-colors ${fieldErrors?.typedDoc
+                            ? 'border-red-500 bg-red-50 focus:border-red-700'
+                            : 'border-gray-300 focus:border-blue-500'
+                        }`} */}
+                    <option value="Tipo documento" >Tipo documento</option>
 
                     {typeDoc.map((doc) => (
                         <option key={doc.type} value={doc.type}>{doc.type}</option>
                     ))}
 
                 </select>
+                {fieldErrors?.typedDoc && (
+                    <p className="mt-1 text-sm font-medium text-red-600">
+                        {fieldErrors.typedDoc[0]}
+                    </p>
+                )}
             </div>
 
             <div>
@@ -85,7 +109,7 @@ export const RegisterForm = () => {
 
             <div>
                 <label htmlFor="middleName">Segundo nombre</label>
-                <input type="text" placeholder="Segundo nombre" id="middleName" className="w-full px-4 py-1 rounded-sm border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:scale-95" name='middleName' onChange={handleChange}/>
+                <input type="text" placeholder="Segundo nombre" id="middleName" className="w-full px-4 py-1 rounded-sm border border-gray-300  placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:scale-95" name='middleName' onChange={handleChange} />
             </div>
 
 
