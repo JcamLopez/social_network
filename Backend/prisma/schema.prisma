@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum DocType {
+  CC
+  PP
+  TI
+}
+
+enum Status {
+  ACTIVED
+  INACTIVED
+}
+
+model Person {
+  document     String       @id @db.VarChar(10)
+  typeDoc      DocType
+  firstName    String       @db.VarChar(50)
+  middleName   String?      @db.VarChar(50)
+  fullLastName String       @db.VarChar(50)
+  age          Int
+  docType      TypeDocumnet @relation(fields: [typeDoc], references: [type])
+  user         User?
+}
+
+model TypeDocumnet {
+  type      DocType  @id
+  status    Status   @default(ACTIVED)
+  createdAt DateTime @default(now())
+  person    Person[]
+}
+
+model User {
+  email          String        @id @db.VarChar(100)
+  personDocument String        @unique @db.VarChar(10)
+  password       String        @db.Text
+  status         Status        @default(ACTIVED)
+  createdAt      DateTime      @default(now())
+  person         Person        @relation(fields: [personDocument], references: [document])
+  publication    Publication[]
+}
+
+
+model Publication {
+  publicationId        Int                   @id @default(autoincrement())
+  userEmail            String                @db.VarChar(100)
+  title                String                @db.VarChar(50)
+  description          String                @db.Text
+  status               Status                @default(ACTIVED)
+  createdAt            DateTime              @default(now())
+  user                 User                  @relation(fields: [userEmail], references: [email])
+  publication_category PublicationCategory[]
+}
+
+model Category {
+  categoryId           Int                   @id @default(autoincrement())
+  title                String                @unique @db.VarChar(50)
+  status               Status                @default(ACTIVED)
+  createdAt            DateTime              @default(now())
+  publication_category PublicationCategory[]
+}
+
+model PublicationCategory {
+  publicationId Int
+  categoryId    Int
+  status        Status      @default(ACTIVED)
+  createdAt     DateTime    @default(now())
+  category      Category    @relation(fields: [categoryId], references: [categoryId])
+  publication   Publication @relation(fields: [publicationId], references: [publicationId])
+
+  @@unique([publicationId, categoryId])
+}
